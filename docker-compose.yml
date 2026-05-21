@@ -2,10 +2,6 @@ services:
   db:
     image: postgres:16
     restart: unless-stopped
-    environment:
-      POSTGRES_USER: a1
-      # POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: todolist
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -16,9 +12,6 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     restart: unless-stopped
-    environment:
-      DATABASE_URL: postgresql://a1:postgres@db:5432/todolist?schema=public
-      NODE_ENV: production
     depends_on:
       - db
     ports:
