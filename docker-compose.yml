@@ -4,7 +4,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: a1
-      POSTGRES_PASSWORD: postgres
+      # POSTGRES_PASSWORD: postgres
       POSTGRES_DB: todolist
     volumes:
       - postgres_data:/var/lib/postgresql/data
