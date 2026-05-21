@@ -1,48 +1,43 @@
 version: "3.9"
 
 services:
-  backend:
-    build:
-      context: ./backend
-    container_name: todolist-backend
-    ports:
-      - "3000:3000"
-    environment:
-      NODE_ENV: development
-      DATABASE_URL: postgresql://postgres:postgres@db:5432/todolist?schema=public
-    depends_on:
-      - db
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
-    command: npm run start:dev
-
-  frontend:
-    build:
-      context: ./frontend
-    container_name: todolist-frontend
-    ports:
-      - "5173:5173"
-    environment:
-      VITE_API_URL: http://backend:3000
-    depends_on:
-      - backend
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    command: npm run dev -- --host 0.0.0.0
-
   db:
-    image: postgres:16-alpine
+    image: postgres:16
     container_name: todolist-db
-    ports:
-      - "5432:5432"
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: postgres
+      POSTGRES_USER: a1
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: todolist
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: todolist-backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://a1:postgres@db:5432/todolist?schema=public
+      NODE_ENV: production
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: todolist-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
 
 volumes:
   postgres_data:
