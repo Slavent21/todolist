@@ -1,9 +1,6 @@
-version: "3.9"
-
 services:
   db:
     image: postgres:16
-    container_name: todolist-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: a1
@@ -11,14 +8,13 @@ services:
       POSTGRES_DB: todolist
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+    networks:
+      - app-network
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: todolist-backend
     restart: unless-stopped
     environment:
       DATABASE_URL: postgresql://a1:postgres@db:5432/todolist?schema=public
@@ -27,17 +23,24 @@ services:
       - db
     ports:
       - "3000:3000"
+    networks:
+      - app-network
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: todolist-frontend
     restart: unless-stopped
     depends_on:
       - backend
     ports:
       - "80:80"
+    networks:
+      - app-network
 
 volumes:
   postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
