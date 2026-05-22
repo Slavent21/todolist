@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import { GroupsPage } from './pages/GroupsPage';
+import { GroupsPage } from './pages/GroupsPage/GroupsPage';
 import 'normalize.css';
 
 export default function App() {
