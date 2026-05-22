@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { Group } from '../../../types';
 import { TaskCard } from './TaskCard';
+import { TaskModal } from './TaskModal';
 
 type Props = {
     styles: any;
@@ -24,6 +26,8 @@ export function TaskBoard({
     addSubtask,
     deleteTask,
 }: Props) {
+    const [selectedTask, setSelectedTask] = useState<any | null>(null);
+
     return (
         <main style={styles.content}>
             {currentGroup ? (
@@ -54,15 +58,30 @@ export function TaskBoard({
                                 key={task.id}
                                 task={task}
                                 styles={styles}
-                                newSubtaskTitle={newSubtaskTitles[task.id] || ''}
-                                setNewSubtaskTitle={(value) =>
-                                    setNewSubtaskTitles((prev) => ({ ...prev, [task.id]: value }))
-                                }
-                                addSubtask={() => addSubtask(task.id)}
-                                deleteTask={() => deleteTask(task.id)}
+                                onClick={() => setSelectedTask(task)}
                             />
                         ))}
                     </div>
+
+                    {selectedTask && (
+                        <TaskModal
+                            task={selectedTask}
+                            styles={styles}
+                            newSubtaskTitle={newSubtaskTitles[selectedTask.id] || ''}
+                            setNewSubtaskTitle={(value) =>
+                                setNewSubtaskTitles((prev) => ({
+                                    ...prev,
+                                    [selectedTask.id]: value,
+                                }))
+                            }
+                            addSubtask={() => addSubtask(selectedTask.id)}
+                            deleteTask={() => {
+                                deleteTask(selectedTask.id);
+                                setSelectedTask(null);
+                            }}
+                            onClose={() => setSelectedTask(null)}
+                        />
+                    )}
                 </div>
             ) : (
                 <div style={styles.centeredNotice}>
