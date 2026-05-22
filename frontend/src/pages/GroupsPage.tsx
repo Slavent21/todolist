@@ -137,7 +137,7 @@ export function GroupsPage() {
 
           <form
             onSubmit={(e) => {
-              e.preventDefault(); // Обязательно отменяем перезагрузку страницы
+              e.preventDefault();
               createGroup();
             }}
             style={styles.groupCreate}>
@@ -189,17 +189,22 @@ export function GroupsPage() {
           <div style={{ maxWidth: 700, margin: '0 auto' }}>
             <h1 style={styles.contentTitle}>{currentGroup.name}</h1>
 
-            <div style={styles.taskCreate}>
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                addTask();
+              }}
+              style={styles.taskCreate}>
               <input
                 value={newTaskTitle}
                 onChange={(e) => setNewTaskTitle(e.target.value)}
                 placeholder="Добавить задачу в список..."
                 style={styles.input}
               />
-              <button onClick={addTask} style={styles.primaryButton} className="action-button">
+              <button style={styles.primaryButton} className="action-button">
                 Добавить задачу
               </button>
-            </div>
+            </form>
 
             <div style={styles.taskList}>
               {currentGroup.tasks?.map((task: any) => (
