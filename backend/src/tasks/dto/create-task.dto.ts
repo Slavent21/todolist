@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateTaskDto {
@@ -14,4 +14,11 @@ export class CreateTaskDto {
   @IsString()
   @ApiProperty({ example: 12 })
   groupId!: string;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(3)
+  @ApiProperty({ example: 1 })
+  priority!: number;
 }

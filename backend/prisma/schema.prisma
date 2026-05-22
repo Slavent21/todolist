@@ -22,6 +22,7 @@ model Task {
   title       String
   description String?
   completed   Boolean    @default(false)
+  priority    Int        @default(2)
   groupId     String
   group       Group      @relation(fields: [groupId], references: [id], onDelete: Cascade)
   comments    Comment[]
