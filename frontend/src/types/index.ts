@@ -11,6 +11,7 @@ export type Group = {
     description?: string | null;
     completed: boolean;
     groupId: string;
+    priority: number
   };
   
   export type Comment = {

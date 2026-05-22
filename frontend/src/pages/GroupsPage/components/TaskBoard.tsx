@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Group } from '../../../types';
 import { TaskCard } from './TaskCard';
 import { TaskModal } from './TaskModal';
@@ -15,6 +15,9 @@ type Props = {
     deleteTask: (taskId: string) => void;
 };
 
+// Типы сортировки
+type SortOption = 'date' | 'priority' | 'alphabetical';
+
 export function TaskBoard({
     styles,
     currentGroup,
@@ -27,6 +30,23 @@ export function TaskBoard({
     deleteTask,
 }: Props) {
     const [selectedTask, setSelectedTask] = useState<any | null>(null);
+    const [sortBy, setSortBy] = useState<SortOption>('date');
+
+    // Логика сортировки задач
+    const sortedTasks = useMemo(() => {
+        if (!currentGroup?.tasks) return [];
+        
+        return [...currentGroup.tasks].sort((a, b) => {
+            if (sortBy === 'priority') {
+                return (b.priority || 0) - (a.priority || 0); // По убыванию приоритета
+            }
+            if (sortBy === 'alphabetical') {
+                return a.title.localeCompare(b.title);
+            }
+            // По умолчанию по дате (новые сверху)
+            return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+        });
+    }, [currentGroup?.tasks, sortBy]);
 
     return (
         <main style={styles.content}>
@@ -52,8 +72,28 @@ export function TaskBoard({
                         </button>
                     </form>
 
+                    {/* Блок управления сортировкой */}
+                    <div style={{ marginBottom: 16, display: 'flex', gap: 10, alignItems: 'center' }}>
+                        <span style={{ fontSize: 13, color: '#666' }}>Сортировать:</span>
+                        <select 
+                            value={sortBy} 
+                            onChange={(e) => setSortBy(e.target.value as SortOption)}
+                            style={{
+                                padding: '4px 8px',
+                                borderRadius: 6,
+                                border: '1px solid #ddd',
+                                fontSize: 13,
+                                outline: 'none'
+                            }}
+                        >
+                            <option value="date">По дате создания</option>
+                            <option value="priority">По приоритету</option>
+                            <option value="alphabetical">По алфавиту</option>
+                        </select>
+                    </div>
+
                     <div style={styles.taskList}>
-                        {currentGroup.tasks?.map((task: any) => (
+                        {sortedTasks.map((task: any) => (
                             <TaskCard
                                 key={task.id}
                                 task={task}
