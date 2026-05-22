@@ -135,17 +135,22 @@ export function GroupsPage() {
             <h2 style={styles.title}>Проекты</h2>
           </div>
 
-          <div style={styles.groupCreate}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault(); // Обязательно отменяем перезагрузку страницы
+              createGroup();
+            }}
+            style={styles.groupCreate}>
             <input
               value={groupName}
               onChange={(e) => setGroupName(e.target.value)}
               placeholder="Новая группа"
               style={styles.sidebarInput}
             />
-            <button onClick={createGroup} style={styles.primaryButton} className="action-button">
+            <button style={styles.primaryButton} className="action-button">
               +
             </button>
-          </div>
+          </form>
 
           <div style={styles.groupList}>
             {groups.map((group) => (
